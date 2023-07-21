@@ -1,4 +1,5 @@
 import copy
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -62,7 +63,7 @@ class VQModel_Ref(pl.LightningModule):
     
         self.loss = instantiate_from_config(lossconfig)
         
-        if checkpoint_encoder is not None and ckpt_path is None:
+        if checkpoint_encoder is not None and ckpt_path is None and os.path.isfile(checkpoint_encoder):
             print('loaded encoder chekpoint from', checkpoint_encoder)
             ckpt_enc = torch.load(checkpoint_encoder, map_location='cpu')['state_dict']
             load_model(self.encoder, ckpt_enc, 'encoder')
@@ -71,7 +72,7 @@ class VQModel_Ref(pl.LightningModule):
                 load_model(self.quantize_enc, ckpt_enc, 'quantize')
             except:
                 pass
-        if checkpoint_decoder is not None and ckpt_path is None:
+        if checkpoint_decoder is not None and ckpt_path is None and os.path.isfile(checkpoint_decoder):
             print('loaded decoder chekpoint from', checkpoint_decoder)
             ckpt_dec = torch.load(checkpoint_decoder, map_location='cpu')['state_dict']
             load_model(self.encoder_real, ckpt_dec, 'encoder')
@@ -83,7 +84,7 @@ class VQModel_Ref(pl.LightningModule):
             except:
                 pass
         
-        if ckpt_path is not None:
+        if ckpt_path is not None and os.path.isfile(ckpt_path):
             self.init_from_ckpt(ckpt_path, ignore_keys=ignore_keys)
             
         if colorize_nlabels is not None:
