@@ -30,10 +30,10 @@ model:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 32
+    batch_size: 34
     num_workers: 14
     train:
-      target: taming.data.unpaired_oadat.OADATDatasetSingleImage
+      target: taming.data.unpaired_oadat.OADATSingle
       params:
         fname_h5: datasets/OADAT/SWFD_semicircle_RawBP.h5 
         groupname: sc_BP 
@@ -42,7 +42,7 @@ data:
         prng_seed: 42
         size: 256
     validation:
-      target: taming.data.unpaired_oadat.OADATDatasetSingleImage
+      target: taming.data.unpaired_oadat.OADATSingle
       params:
         fname_h5: datasets/OADAT/SWFD_semicircle_RawBP.h5 
         groupname: sc_BP 
