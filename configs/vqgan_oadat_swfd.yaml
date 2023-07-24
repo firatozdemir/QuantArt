@@ -39,6 +39,7 @@ data:
         groupname: sc_BP 
         inds_end: 37000
         inds_start: 0
+        prng_seed: 42
         size: 256
     validation:
       target: taming.data.unpaired_oadat.OADATDatasetSingleImage
@@ -47,5 +48,6 @@ data:
         groupname: sc_BP 
         inds_end: 38000
         inds_start: 37000
+        prng_seed: 42
         size: 256
 
