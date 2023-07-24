@@ -1,0 +1,82 @@
+model:
+  base_learning_rate: 4.5e-6
+  target: taming.models.vqgan_ref.VQModel_Ref
+  params:
+    checkpoint_decoder: logs/oadat/vqgan_SCD_vcBP_f16_1024.ckpt # decoder checkpoint path
+    checkpoint_encoder: logs/oadat/vqgan_SWFD_scBP_f16_1024.ckpt # encoder checkpoint path
+    embed_dim: 256
+    n_embed: 1024
+    use_residual: True
+    ddconfig:
+      double_z: False
+      z_channels: 256
+      resolution: 256
+      in_channels: 1
+      out_ch: 1
+      ch: 128
+      ch_mult: [1,1,2,2,4]  
+      num_res_blocks: 2
+      attn_resolutions: [16]
+      dropout: 0.0
+
+    lossconfig:
+      target: taming.modules.losses.vqperceptual_ref.VQLPIPS_Ref
+      params:
+        disc_ndf: 64
+        disc_num_layers: 0
+        disc_conditional: False
+        disc_in_channels: 256
+        disc_start: 0
+        disc_weight: 1.0
+        disc_factor: 0.8
+        codebook1_weight: 1.0
+        codebook2_weight: 1.0
+        reverse_weight: 1.0
+        style_weight: 10.0
+        G_step: 1
+
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 28
+    num_workers: 28
+    train:
+      target: taming.data.unpaired_oadat.OADAT
+      params:
+        fname_h5_2: datasets/OADAT/SWFD_semicircle_RawBP.h5 # folder2: datasets/painter-by-numbers/train # style data
+        fname_h5_1: datasets/OADAT/SCD_RawBP.h5 # folder1: datasets/coco/train_img # content data
+        groupname_2: sc_BP #style group
+        groupname_1: vc_BP #content group
+        inds_2_end: 37000
+        inds_2_start: 0
+        inds_1_end: 19000
+        inds_1_start: 0
+        prng_seed: 42
+        size: 256
+    validation:
+      target: taming.data.unpaired_oadat.OADAT
+      params:
+        fname_h5_2: datasets/OADAT/SWFD_semicircle_RawBP.h5 # folder2: datasets/painter-by-numbers/train # style data
+        fname_h5_1: datasets/OADAT/SCD_RawBP.h5 # folder1: datasets/coco/train_img # content data
+        groupname_2: sc_BP #style group
+        groupname_1: vc_BP #content group
+        inds_2_end: 38000
+        inds_2_start: 37000
+        inds_1_end: 19500
+        inds_1_start: 19000
+        prng_seed: 42
+        size: 256
+    test:
+      target: taming.data.unpaired_oadat.OADAT
+      params:
+        fname_h5_2: datasets/OADAT/SWFD_semicircle_RawBP.h5 # folder2: datasets/painter-by-numbers/train # style data
+        fname_h5_1: datasets/OADAT/SCD_RawBP.h5 # folder1: datasets/coco/train_img # content data
+        groupname_2: sc_BP #style group
+        groupname_1: vc_BP #content group
+        inds_2_end: 39228
+        inds_2_start: 39000
+        inds_1_end: 20000
+        inds_1_start: 19500
+        prng_seed: 42
+        size: 256
+
